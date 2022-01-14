@@ -5,7 +5,6 @@ plugins {
 group 'de.javamyadmin'
 version '2.0'
 
-
 repositories {
     mavenCentral()
 }
