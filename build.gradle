@@ -1,10 +1,10 @@
-plugins {
-    id 'java'
+allprojects {
+    group 'de.javamyadmin'
+    version '2.0'
 }
 
-group 'de.javamyadmin'
-version '2.0'
-
-repositories {
-    mavenCentral()
+subprojects {
+    repositories {
+        mavenCentral()
+    }
 }

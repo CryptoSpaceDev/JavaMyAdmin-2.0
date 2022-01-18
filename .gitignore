@@ -1,6 +1,6 @@
 ### JetBrains
 out/
-.idea
+.idea/
 *.iml
 
 ### Java
