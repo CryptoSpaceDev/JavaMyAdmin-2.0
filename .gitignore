@@ -10,3 +10,6 @@ out/
 build/
 .gradle/
 !gradle/wrapper/gradle-wrapper.jar
+
+### Configuration
+javamyadmin.ini
