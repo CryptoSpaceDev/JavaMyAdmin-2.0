@@ -1,15 +1,17 @@
 package de.javamyadmin;
 
+import de.javamyadmin.core.ConnectionManager;
+import de.javamyadmin.views.DataView;
+import de.javamyadmin.views.TableListView;
+import java.sql.SQLException;
 import javafx.application.Application;
-import javafx.scene.Parent;
+import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
 import javafx.stage.Stage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.javamyadmin.database.Connector;
-import de.javamyadmin.views.DataView;
 
 public class JavaMyAdmin extends Application {
 
@@ -17,12 +19,25 @@ public class JavaMyAdmin extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Connector connector = new Connector();
+        ConnectionManager connector;
 
-        DataView view = new DataView();
-        view.setTable(connector.getTable());
-        Parent root = view.getRoot();
-        primaryStage.setScene(new Scene(root, 800.0, 600.0));
+        try {
+            connector = new ConnectionManager("jdbc:postgresql://localhost:5433/postgres", "postgres", "postgres");
+        } catch (SQLException e) {
+            log.error("Error while connecting to database", e);
+            Platform.exit();
+            return;
+        }
+
+        TableListView tableListView = new TableListView(connector);
+
+        DataView dataView = new DataView();
+
+        SplitPane rootPane = new SplitPane(tableListView.getRoot(), dataView.getRoot());
+        rootPane.setOrientation(Orientation.HORIZONTAL);
+        rootPane.setDividerPosition(0, 0.2);
+
+        primaryStage.setScene(new Scene(rootPane, 800.0, 600.0));
         primaryStage.show();
     }
 
@@ -30,4 +45,5 @@ public class JavaMyAdmin extends Application {
         log.info("JavaMyAdmin-2.0");
         launch(JavaMyAdmin.class, args);
     }
+
 }
