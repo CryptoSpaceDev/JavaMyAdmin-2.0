@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'pmd'
+    id 'name.remal.sonarlint' version '1.5.0'
 }
 
 application {
@@ -16,4 +18,16 @@ javafx {
 dependencies {
     implementation project(":javamyadmin-core")
     implementation 'org.slf4j:slf4j-simple:1.7.33'
+}
+
+pmd {
+    ignoreFailures = true
+}
+
+sonarlint {
+    ignoreFailures = true
+
+    excludes {
+        message 'java:S110'
+    }
 }

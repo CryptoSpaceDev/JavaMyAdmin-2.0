@@ -1,15 +1,15 @@
 package de.javamyadmin.config;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class ConfigurationParameter<T> {
 
-    private static final Map<String, ConfigurationParameter<?>> parameters = new HashMap<>();
+    private static final Map<String, ConfigurationParameter<?>> parameters = new LinkedHashMap<>();
 
     private final String key;
     private final T defaultValue;
@@ -56,8 +56,24 @@ public class ConfigurationParameter<T> {
         return serializer;
     }
 
-    public static Map<String, ConfigurationParameter<?>> getParameters() {
-        return Collections.unmodifiableMap(parameters);
+    public static void iterateParameters(Consumer<ConfigurationParameter<?>> parameterConsumer) {
+        parameters.forEach((key, parameter) -> parameterConsumer.accept(parameter));
+    }
+
+    public static void loadParameterValue(String key, String value) throws CouldNotDeserializeValueException {
+        ConfigurationParameter<?> parameter = parameters.get(key);
+
+        if (parameter == null) {
+            throw new CouldNotDeserializeValueException("Unknown key: %s".formatted(key));
+        } else {
+            loadParameterValue(parameter, value);
+        }
+    }
+
+    private static <T> void loadParameterValue(ConfigurationParameter<T> parameter, String value) throws CouldNotDeserializeValueException {
+        Deserializer<T> deserializer = parameter.getDeserializer();
+        T val = deserializer.deserialize(value);
+        parameter.setValue(val);
     }
 
     public static ConfigurationParameter<String> registerStringParameter(String key, String defaultValue) {

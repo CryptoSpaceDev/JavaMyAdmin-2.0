@@ -41,31 +41,9 @@ public class TableListView implements View {
         rootItem.setGraphic(rootItem.getValue().icon().build());
 
         root.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        root.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-            if (oldValue != null && oldValue.getGraphic() instanceof Text t) {
-                t.setFill(Color.BLACK);
-            }
+        root.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> onSelectionChange(oldValue, newValue));
 
-            if (newValue != null && newValue.getGraphic() instanceof Text t) {
-                t.setFill(Color.WHITE);
-            }
-        });
-
-        root.focusedProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue) {
-                root.getSelectionModel().getSelectedItems().forEach(item -> {
-                    if (item.getGraphic() instanceof Text t) {
-                        t.setFill(Color.WHITE);
-                    }
-                });
-            } else {
-                root.getSelectionModel().getSelectedItems().forEach(item -> {
-                    if (item.getGraphic() instanceof Text t) {
-                        t.setFill(Color.BLACK);
-                    }
-                });
-            }
-        });
+        root.focusedProperty().addListener((obs, oldValue, newValue) -> onFocusChange(newValue));
     }
 
     private void initProperties() {
@@ -81,6 +59,32 @@ public class TableListView implements View {
 
         connectionManager.addListener((obs, oldValue, newValue) -> refreshDatabasesList(newValue));
         refreshDatabasesList(connectionManager.getValue());
+    }
+
+    private void onSelectionChange(TreeItem<TableListItem> oldValue, TreeItem<TableListItem> newValue) {
+        if (oldValue != null && oldValue.getGraphic() instanceof Text t) {
+            t.setFill(Color.BLACK);
+        }
+
+        if (newValue != null && newValue.getGraphic() instanceof Text t) {
+            t.setFill(Color.WHITE);
+        }
+    }
+
+    private void onFocusChange(boolean newValue) {
+        if (newValue) {
+            root.getSelectionModel().getSelectedItems().forEach(item -> {
+                if (item.getGraphic() instanceof Text t) {
+                    t.setFill(Color.WHITE);
+                }
+            });
+        } else {
+            root.getSelectionModel().getSelectedItems().forEach(item -> {
+                if (item.getGraphic() instanceof Text t) {
+                    t.setFill(Color.BLACK);
+                }
+            });
+        }
     }
 
     private void refreshDatabasesList(ConnectionManager newValue) {
