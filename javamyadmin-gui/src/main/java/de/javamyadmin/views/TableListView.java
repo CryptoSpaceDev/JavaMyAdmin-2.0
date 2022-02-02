@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Parent;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
@@ -26,9 +27,9 @@ public class TableListView implements View {
     private final TreeItem<TableListItem> rootItem = new TreeItem<>(new TableListItem(FontAwesome.FA_FOLDER, "Root"));
     private final Property<List<String>> databases = new SimpleObjectProperty<>(Collections.emptyList());
 
-    private final ConnectionManager connectionManager;
+    private final ObservableValue<ConnectionManager> connectionManager;
 
-    public TableListView(ConnectionManager connectionManager) {
+    public TableListView(ObservableValue<ConnectionManager> connectionManager) {
         this.connectionManager = connectionManager;
         initView();
         initProperties();
@@ -78,10 +79,19 @@ public class TableListView implements View {
             }
         });
 
-        try {
-            databases.setValue(connectionManager.getDatabases());
-        } catch (SQLException e) {
-            log.error("Error while getting list of databases", e);
+        connectionManager.addListener((obs, oldValue, newValue) -> refreshDatabasesList(newValue));
+        refreshDatabasesList(connectionManager.getValue());
+    }
+
+    private void refreshDatabasesList(ConnectionManager newValue) {
+        if (newValue == null) {
+            databases.setValue(Collections.emptyList());
+        } else {
+            try {
+                databases.setValue(newValue.getDatabases());
+            } catch (SQLException e) {
+                log.error("Error while getting list of databases", e);
+            }
         }
     }
 
