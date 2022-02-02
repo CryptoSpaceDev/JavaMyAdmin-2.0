@@ -5,6 +5,7 @@ import de.javamyadmin.View;
 import de.javamyadmin.config.Configuration;
 import de.javamyadmin.core.ConnectionManager;
 import de.javamyadmin.form.Form;
+import de.javamyadmin.form.FormPasswordField;
 import de.javamyadmin.form.FormTextField;
 import de.javamyadmin.form.InvalidValueException;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ public class ConnectionManagerView implements View {
     private final Form form = new Form();
     private final FormTextField url = new FormTextField(Configuration.DATABASE_URL, "URL", FontAwesome.FA_LINK.build());
     private final FormTextField user = new FormTextField(Configuration.DATABASE_USER, "User", FontAwesome.FA_USER.build());
-    private final FormTextField password = new FormTextField(Configuration.DATABASE_PASS, "Password", FontAwesome.FA_KEY.build());
+    private final FormPasswordField password = new FormPasswordField(Configuration.DATABASE_PASS, "Password", FontAwesome.FA_KEY.build());
 
     public ConnectionManagerView(@Nonnull Consumer<ConnectionManager> onSubmit) {
         Objects.requireNonNull(onSubmit);
