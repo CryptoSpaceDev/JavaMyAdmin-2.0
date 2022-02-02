@@ -1,7 +1,6 @@
 package de.javamyadmin.form;
 
 import de.javamyadmin.config.ConfigurationParameter;
-import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -13,7 +12,7 @@ public class FormIntegerPicker implements FormNode {
     private final Spinner<Integer> spinner;
 
     public FormIntegerPicker(ConfigurationParameter<Integer> parameter, int min, int max, int step) {
-        this(parameter, min, max, step, parameter.getKey() == null ? "" : parameter.getKey());
+        this(parameter, min, max, step, parameter == null ? "" : parameter.getKey());
     }
 
     public FormIntegerPicker(ConfigurationParameter<Integer> parameter, int min, int max, int step, String label) {
@@ -21,12 +20,16 @@ public class FormIntegerPicker implements FormNode {
     }
 
     public FormIntegerPicker(ConfigurationParameter<Integer> parameter, int min, int max, int step, String message, Node graphic) {
-        this.parameter = Objects.requireNonNull(parameter);
+        this.parameter = parameter;
         label.setText(message);
         label.setGraphic(graphic);
         spinner = new Spinner<>(min, max, step);
         spinner.setMaxWidth(Double.MAX_VALUE);
         spinner.setEditable(true);
+
+        if (parameter != null) {
+            spinner.getValueFactory().setValue(parameter.getValueOrDefault());
+        }
     }
 
     @Override

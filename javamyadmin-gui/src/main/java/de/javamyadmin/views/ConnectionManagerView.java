@@ -29,7 +29,7 @@ public class ConnectionManagerView implements View {
         FontAwesome.FA_DATABASE.build());
     private final FormTextField host = new FormTextField(Configuration.DATABASE_HOST, "Host", FontAwesome.FA_LINK.build());
     private final FormIntegerPicker port = new FormIntegerPicker(Configuration.DATABASE_PORT, 0, 65535, 1, "Port", FontAwesome.FA_UNLOCK.build());
-    private final FormTextField name = new FormTextField(Configuration.DATABASE_HOST, "Database", FontAwesome.FA_ALIGN_LEFT.build());
+    private final FormTextField name = new FormTextField(Configuration.DATABASE_NAME, "Database", FontAwesome.FA_ALIGN_LEFT.build());
     private final FormTextField url = new FormTextField(null, "URL", FontAwesome.FA_NETWORK_WIRED.build());
     private final FormTextField user = new FormTextField(Configuration.DATABASE_USER, "User", FontAwesome.FA_USER.build());
     private final FormPasswordField password = new FormPasswordField(Configuration.DATABASE_PASS, "Password", FontAwesome.FA_KEY.build());
@@ -41,7 +41,7 @@ public class ConnectionManagerView implements View {
         form.addSubmitListener(() -> {
             try {
                 ConnectionManager manager = new ConnectionManager(
-                    Configuration.DATABASE_HOST.getValueOrDefault(),
+                    url.getTextField().getText(),
                     Configuration.DATABASE_USER.getValueOrDefault(),
                     Configuration.DATABASE_PASS.getValueOrDefault()
                 );
@@ -64,15 +64,24 @@ public class ConnectionManagerView implements View {
         form.add(user);
         form.add(password);
 
-        url.getNode().setDisable(true);
-        url.getNode().textProperty().bind(BindingUtils.concatStrings(true,
+        system.getNode().getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null && newValue.getDefaultPort() != null) {
+                port.getNode().getValueFactory().setValue(newValue.getDefaultPort());
+            }
+        });
+
+        url.getCopyButtonVisibleProperty().setValue(true);
+        url.getTextField().setDisable(true);
+        url.getTextField().textProperty().bind(BindingUtils.concatStrings(true,
             BindingUtils.mapString(system.getNode().valueProperty(), DatabaseSystem::getUrlPrefix),
-            host.getNode().textProperty(),
+            host.getTextField().textProperty(),
             new SimpleStringProperty(":"),
             port.getNode().valueProperty().asString(),
             new SimpleStringProperty("/"),
-            name.getNode().textProperty()
+            BindingUtils.urlSafeStringBinding(name.getTextField().textProperty())
         ));
+
+        password.getShowPasswordButtonVisibleProperty().setValue(true);
 
         form.getSubmitButton().setText("Connect");
         form.getSubmitButton().setGraphic(FontAwesome.FA_SIGN_IN_ALT.build());
@@ -83,7 +92,7 @@ public class ConnectionManagerView implements View {
         ConnectionManager manager = null;
 
         try {
-            manager = new ConnectionManager(url.getNode().getText(), user.getNode().getText(), password.getNode().getText());
+            manager = new ConnectionManager(url.getTextField().getText(), user.getTextField().getText(), password.getPasswordProperty().get());
         } catch (SQLException e) {
             throw new InvalidValueException(host, e.getMessage(), e);
         } finally {

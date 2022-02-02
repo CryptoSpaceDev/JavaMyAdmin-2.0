@@ -1,5 +1,7 @@
 package de.javamyadmin;
 
+import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -1466,7 +1468,8 @@ public enum FontAwesome {
     FA_YOUTUBE_SQUARE("\uf431"),
     FA_ZHIHU("\uf63f");
 
-    private static final Font FONT = Font.loadFont(FontAwesome.class.getResourceAsStream("/fa-solid.ttf"), 16.0);
+    private static final double FONT_SIZE = 18.0;
+    private static final Font FONT = Font.loadFont(FontAwesome.class.getResourceAsStream("/fa-solid.ttf"), FONT_SIZE);
 
     private final String unicode;
 
@@ -1478,14 +1481,18 @@ public enum FontAwesome {
         return unicode;
     }
 
-    public Text build() {
+    public Node build() {
         return build(null);
     }
 
-    public Text build(Paint fill) {
+    public Node build(Paint fill) {
         Text text = new Text(unicode);
         text.setFont(FONT);
         text.setFill(fill == null ? Color.BLACK : fill);
-        return text;
+
+        // Wrap text in a stack pane to set minimum size for consistent icon size.
+        StackPane parent = new StackPane(text);
+        parent.setMinSize(FONT_SIZE * 1.25, FONT_SIZE);
+        return parent;
     }
 }

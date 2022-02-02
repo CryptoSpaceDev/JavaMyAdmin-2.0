@@ -22,7 +22,7 @@ public class Configuration {
 
     public static final ConfigurationParameter<DatabaseSystem> DATABASE_SYSTEM = registerEnumParameter("DATABASE_SYSTEM", null, DatabaseSystem.class);
     public static final ConfigurationParameter<String> DATABASE_HOST = registerStringParameter("DATABASE_HOST", null);
-    public static final ConfigurationParameter<Integer> DATABASE_PORT = registerIntParameter("DATABASE_PORT", null);
+    public static final ConfigurationParameter<Integer> DATABASE_PORT = registerIntParameter("DATABASE_PORT", 0);
     public static final ConfigurationParameter<String> DATABASE_NAME = registerStringParameter("DATABASE_NAME", null);
     public static final ConfigurationParameter<String> DATABASE_USER = registerStringParameter("DATABASE_USER", null);
     public static final ConfigurationParameter<String> DATABASE_PASS = registerStringParameter("DATABASE_PASSWORD", null);

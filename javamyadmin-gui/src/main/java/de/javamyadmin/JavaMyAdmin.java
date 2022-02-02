@@ -3,6 +3,7 @@ package de.javamyadmin;
 import de.javamyadmin.config.Configuration;
 import de.javamyadmin.config.ErrorReporter;
 import de.javamyadmin.core.ConnectionManager;
+import de.javamyadmin.core.database.DatabaseSystem;
 import de.javamyadmin.form.Form;
 import de.javamyadmin.views.ConnectionManagerView;
 import de.javamyadmin.views.DataView;
@@ -35,6 +36,7 @@ public class JavaMyAdmin extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // TODO cleanup this method
         if (primaryStage == null) {
             throw new NullPointerException("primaryStage == null");
         }
@@ -45,15 +47,23 @@ public class JavaMyAdmin extends Application {
             log.warn("Could not read from settings file at path {}", settingsPath, e);
         }
 
-        String url = Configuration.DATABASE_HOST.getValueOrDefault();
+        DatabaseSystem system = Configuration.DATABASE_SYSTEM.getValueOrDefault();
+        String host = Configuration.DATABASE_HOST.getValueOrDefault();
+        Integer port = Configuration.DATABASE_PORT.getValueOrDefault();
+        String name = Configuration.DATABASE_NAME.getValueOrDefault();
         String user = Configuration.DATABASE_USER.getValueOrDefault();
         String pass = Configuration.DATABASE_PASS.getValueOrDefault();
 
-        if (url == null || user == null || pass == null) {
+        if (system == null || host == null || port == null || name == null || user == null || pass == null) {
             showConnectionManagerDialog(primaryStage);
         }
 
-        if (tryConnection(url, user, pass, connector)) {
+        if (system == null || host == null || port == null || name == null || user == null || pass == null) {
+            Platform.exit();
+            return;
+        }
+
+        if (tryConnection("%s%s:%d/%s".formatted(system.getUrlPrefix(), host, port, name), user, pass, connector)) {
             return;
         }
 

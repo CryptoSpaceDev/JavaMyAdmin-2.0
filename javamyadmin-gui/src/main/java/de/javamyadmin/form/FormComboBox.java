@@ -1,7 +1,6 @@
 package de.javamyadmin.form;
 
 import de.javamyadmin.config.ConfigurationParameter;
-import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -22,12 +21,17 @@ public class FormComboBox<E extends Enum<E>> implements FormNode {
     }
 
     public FormComboBox(ConfigurationParameter<E> parameter, @Nonnull Class<E> enumClass, String message, Node graphic) {
-        this.parameter = Objects.requireNonNull(parameter);
+        this.parameter = parameter;
         label.setText(message);
         label.setGraphic(graphic);
         comboBox.itemsProperty().addListener(change -> selectFirstItemIfPossible());
         comboBox.getItems().addAll(enumClass.getEnumConstants());
         comboBox.setMaxWidth(Double.MAX_VALUE);
+
+        if (parameter != null) {
+            comboBox.getSelectionModel().select(parameter.getValue().orElse(null));
+        }
+
         selectFirstItemIfPossible();
     }
 
