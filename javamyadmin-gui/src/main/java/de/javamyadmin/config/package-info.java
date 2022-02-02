@@ -1,4 +1,4 @@
-@ParametersAreNullableByDefault
+@ParametersAreNonnullByDefault
 package de.javamyadmin.config;
 
-import javax.annotation.ParametersAreNullableByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;

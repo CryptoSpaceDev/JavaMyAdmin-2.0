@@ -12,6 +12,7 @@ import de.javamyadmin.form.FormPasswordField;
 import de.javamyadmin.form.FormTextField;
 import de.javamyadmin.form.InvalidValueException;
 import de.javamyadmin.utils.BindingUtils;
+import de.javamyadmin.utils.ComponentUtils;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -69,6 +70,8 @@ public class ConnectionManagerView implements View {
                 port.getNode().getValueFactory().setValue(newValue.getDefaultPort());
             }
         });
+
+        ComponentUtils.addTextFieldHostValidator(host.getTextField());
 
         url.getCopyButtonVisibleProperty().setValue(true);
         url.getTextField().setDisable(true);

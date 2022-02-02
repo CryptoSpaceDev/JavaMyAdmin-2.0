@@ -1,6 +1,7 @@
 package de.javamyadmin.form;
 
 import de.javamyadmin.config.ConfigurationParameter;
+import de.javamyadmin.utils.ComponentUtils;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -25,7 +26,8 @@ public class FormIntegerPicker implements FormNode {
         label.setGraphic(graphic);
         spinner = new Spinner<>(min, max, step);
         spinner.setMaxWidth(Double.MAX_VALUE);
-        spinner.setEditable(true);
+
+        ComponentUtils.addSpinnerTextValidator(spinner, min, max);
 
         if (parameter != null) {
             spinner.getValueFactory().setValue(parameter.getValueOrDefault());

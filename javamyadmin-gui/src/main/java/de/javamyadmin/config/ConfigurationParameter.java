@@ -1,12 +1,15 @@
 package de.javamyadmin.config;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ConfigurationParameter<T> {
 
@@ -14,13 +17,16 @@ public class ConfigurationParameter<T> {
 
     private final String key;
     private final T defaultValue;
+    private final String comment;
     private final Deserializer<T> deserializer;
     private final Serializer<T> serializer;
     private final Property<T> valueProperty = new SimpleObjectProperty<>();
 
-    public ConfigurationParameter(String key, T defaultValue, Deserializer<T> deserializer, Serializer<T> serializer) {
+    private ConfigurationParameter(String key, @Nullable T defaultValue, @Nullable String comment, Deserializer<T> deserializer,
+        Serializer<T> serializer) {
         this.defaultValue = defaultValue;
         this.key = key;
+        this.comment = comment;
         this.deserializer = deserializer;
         this.serializer = serializer;
     }
@@ -49,6 +55,10 @@ public class ConfigurationParameter<T> {
         valueProperty.setValue(value);
     }
 
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
+    }
+
     public Deserializer<T> getDeserializer() {
         return deserializer;
     }
@@ -57,7 +67,7 @@ public class ConfigurationParameter<T> {
         return serializer;
     }
 
-    public static void iterateParameters(@Nonnull Consumer<ConfigurationParameter<?>> parameterConsumer) {
+    public static void iterateParameters(Consumer<ConfigurationParameter<?>> parameterConsumer) {
         parameters.forEach((key, parameter) -> parameterConsumer.accept(parameter));
     }
 
@@ -71,7 +81,7 @@ public class ConfigurationParameter<T> {
         }
     }
 
-    private static <T> void loadParameterValue(@Nonnull ConfigurationParameter<T> parameter, String value) throws CouldNotDeserializeValueException {
+    private static <T> void loadParameterValue(ConfigurationParameter<T> parameter, String value) throws CouldNotDeserializeValueException {
         Deserializer<T> deserializer = parameter.getDeserializer();
         T val = deserializer.deserialize(value);
         parameter.setValue(val);
@@ -81,6 +91,7 @@ public class ConfigurationParameter<T> {
         ConfigurationParameter<String> parameter = new ConfigurationParameter<>(
             key,
             defaultValue,
+            "String",
             Deserializer::stringDeserializer,
             Serializer::stringSerializer
         );
@@ -93,6 +104,7 @@ public class ConfigurationParameter<T> {
         ConfigurationParameter<Integer> parameter = new ConfigurationParameter<>(
             key,
             defaultValue,
+            "Integer",
             Deserializer::intDeserializer,
             Serializer::intSerializer
         );
@@ -105,6 +117,7 @@ public class ConfigurationParameter<T> {
         ConfigurationParameter<E> parameter = new ConfigurationParameter<>(
             key,
             defaultValue,
+            "Possible values: %s".formatted(Arrays.stream(enumClass.getEnumConstants()).map(E::name).collect(Collectors.joining(", "))),
             value -> Deserializer.enumDeserializer(enumClass, value),
             Serializer::enumSerializer
         );
