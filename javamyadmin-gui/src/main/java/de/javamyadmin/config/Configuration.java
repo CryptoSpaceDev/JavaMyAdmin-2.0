@@ -1,5 +1,10 @@
 package de.javamyadmin.config;
 
+import static de.javamyadmin.config.ConfigurationParameter.registerEnumParameter;
+import static de.javamyadmin.config.ConfigurationParameter.registerIntParameter;
+import static de.javamyadmin.config.ConfigurationParameter.registerStringParameter;
+
+import de.javamyadmin.core.database.DatabaseSystem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,9 +20,12 @@ import org.slf4j.LoggerFactory;
 
 public class Configuration {
 
-    public static final ConfigurationParameter<String> DATABASE_URL = ConfigurationParameter.registerStringParameter("DATABASE_URL", null);
-    public static final ConfigurationParameter<String> DATABASE_USER = ConfigurationParameter.registerStringParameter("DATABASE_USER", null);
-    public static final ConfigurationParameter<String> DATABASE_PASS = ConfigurationParameter.registerStringParameter("DATABASE_PASSWORD", null);
+    public static final ConfigurationParameter<DatabaseSystem> DATABASE_SYSTEM = registerEnumParameter("DATABASE_SYSTEM", null, DatabaseSystem.class);
+    public static final ConfigurationParameter<String> DATABASE_HOST = registerStringParameter("DATABASE_HOST", null);
+    public static final ConfigurationParameter<Integer> DATABASE_PORT = registerIntParameter("DATABASE_PORT", null);
+    public static final ConfigurationParameter<String> DATABASE_NAME = registerStringParameter("DATABASE_NAME", null);
+    public static final ConfigurationParameter<String> DATABASE_USER = registerStringParameter("DATABASE_USER", null);
+    public static final ConfigurationParameter<String> DATABASE_PASS = registerStringParameter("DATABASE_PASSWORD", null);
 
     private static final Logger log = LoggerFactory.getLogger(Configuration.class);
     private static final Pattern keyValueRegex = Pattern.compile("^([^=]+)=(.*)$");

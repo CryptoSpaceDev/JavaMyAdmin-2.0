@@ -8,13 +8,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
@@ -48,9 +50,9 @@ public class Form extends BorderPane {
         gridPane.setHgap(10.0);
         gridPane.setVgap(5.0);
 
-        HBox buttonLayout = new HBox(rollbackButton, submitButton);
+        TilePane buttonLayout = new TilePane(rollbackButton, submitButton);
         buttonLayout.setPadding(new Insets(10.0));
-        buttonLayout.setSpacing(10.0);
+        buttonLayout.setHgap(10.0);
         buttonLayout.setAlignment(Pos.BASELINE_RIGHT);
 
         VBox mainFormLayout = new VBox(gridPane, errorLabel);
@@ -63,7 +65,10 @@ public class Form extends BorderPane {
         errorLabel.setPadding(new Insets(10.0));
         errorLabel.setWrapText(true);
 
+        rollbackButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         rollbackButton.setOnAction(event -> rollback());
+
+        submitButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         submitButton.setOnAction(event -> {
             errorLabel.setVisible(false);
 
@@ -80,8 +85,6 @@ public class Form extends BorderPane {
             }
         });
 
-        rollbackButton.minWidthProperty().bind(submitButton.minWidthProperty());
-
         minWidthProperty().bind(mainFormLayout.minWidthProperty());
         minHeightProperty().bind(mainFormLayout.minHeightProperty().add(buttonLayout.minHeightProperty()));
     }
@@ -92,8 +95,11 @@ public class Form extends BorderPane {
         gridPane.getChildren().clear();
 
         for (FormNode node : nodes) {
-            gridPane.add(node.getLabel(), 0, rowIndex);
-            gridPane.add(node.getNode(), 1, rowIndex);
+            if (node.getLabel() instanceof Separator separator && separator.getOrientation() == Orientation.HORIZONTAL) {
+                gridPane.add(node.getLabel(), 0, rowIndex, GridPane.REMAINING, 1);
+            } else {
+                gridPane.addRow(rowIndex, node.getLabel(), node.getNode());
+            }
 
             rowIndex++;
         }
@@ -125,6 +131,10 @@ public class Form extends BorderPane {
 
     public void add(FormNode... node) {
         this.nodes.addAll(node);
+    }
+
+    public void addSeparator() {
+        this.nodes.add(new FormSeparator());
     }
 
     public void verify() throws InvalidValueException {

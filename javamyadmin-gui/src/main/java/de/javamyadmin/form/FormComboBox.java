@@ -1,8 +1,6 @@
 package de.javamyadmin.form;
 
 import de.javamyadmin.config.ConfigurationParameter;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -15,19 +13,28 @@ public class FormComboBox<E extends Enum<E>> implements FormNode {
     private final Label label = new Label();
     private final ComboBox<E> comboBox = new ComboBox<>();
 
-    public FormComboBox(@Nonnull ConfigurationParameter<E> parameter, List<E> items) {
-        this(parameter, items, parameter.getKey());
+    public FormComboBox(ConfigurationParameter<E> parameter, @Nonnull Class<E> enumClass) {
+        this(parameter, enumClass, parameter == null ? "" : parameter.getKey());
     }
 
-    public FormComboBox(@Nonnull ConfigurationParameter<E> parameter, List<E> items, String label) {
-        this(parameter, items, label, null);
+    public FormComboBox(ConfigurationParameter<E> parameter, @Nonnull Class<E> enumClass, String label) {
+        this(parameter, enumClass, label, null);
     }
 
-    public FormComboBox(@Nonnull ConfigurationParameter<E> parameter, List<E> items, String message, Node graphic) {
+    public FormComboBox(ConfigurationParameter<E> parameter, @Nonnull Class<E> enumClass, String message, Node graphic) {
         this.parameter = Objects.requireNonNull(parameter);
         label.setText(message);
         label.setGraphic(graphic);
-        comboBox.getItems().addAll(items == null ? Collections.emptyList() : items);
+        comboBox.itemsProperty().addListener(change -> selectFirstItemIfPossible());
+        comboBox.getItems().addAll(enumClass.getEnumConstants());
+        comboBox.setMaxWidth(Double.MAX_VALUE);
+        selectFirstItemIfPossible();
+    }
+
+    private void selectFirstItemIfPossible() {
+        if (comboBox.getItems().size() == 1 && comboBox.getSelectionModel().getSelectedItem() == null) {
+            comboBox.getSelectionModel().selectFirst();
+        }
     }
 
     @Override
@@ -47,12 +54,16 @@ public class FormComboBox<E extends Enum<E>> implements FormNode {
 
     @Override
     public void commit() {
-        parameter.setValue(comboBox.getValue());
+        if (parameter != null) {
+            parameter.setValue(comboBox.getValue());
+        }
     }
 
     @Override
     public void rollback() {
-        comboBox.setValue(parameter.getValueOrDefault());
+        if (parameter != null) {
+            comboBox.setValue(parameter.getValueOrDefault());
+        }
     }
 
 }

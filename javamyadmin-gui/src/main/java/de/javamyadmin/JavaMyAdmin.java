@@ -45,7 +45,7 @@ public class JavaMyAdmin extends Application {
             log.warn("Could not read from settings file at path {}", settingsPath, e);
         }
 
-        String url = Configuration.DATABASE_URL.getValueOrDefault();
+        String url = Configuration.DATABASE_HOST.getValueOrDefault();
         String user = Configuration.DATABASE_USER.getValueOrDefault();
         String pass = Configuration.DATABASE_PASS.getValueOrDefault();
 
@@ -86,7 +86,7 @@ public class JavaMyAdmin extends Application {
             connector.setValue(manager);
             dialogStage.close();
         }).getView();
-        dialogStage.setScene(new Scene(connectionManagerForm, 400.0, 300.0));
+        dialogStage.setScene(new Scene(connectionManagerForm, 600.0, 450.0));
         dialogStage.setResizable(false);
         dialogStage.showAndWait();
     }

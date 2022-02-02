@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javax.annotation.Nonnull;
 
 public class ConfigurationParameter<T> {
 
@@ -56,7 +57,7 @@ public class ConfigurationParameter<T> {
         return serializer;
     }
 
-    public static void iterateParameters(Consumer<ConfigurationParameter<?>> parameterConsumer) {
+    public static void iterateParameters(@Nonnull Consumer<ConfigurationParameter<?>> parameterConsumer) {
         parameters.forEach((key, parameter) -> parameterConsumer.accept(parameter));
     }
 
@@ -70,7 +71,7 @@ public class ConfigurationParameter<T> {
         }
     }
 
-    private static <T> void loadParameterValue(ConfigurationParameter<T> parameter, String value) throws CouldNotDeserializeValueException {
+    private static <T> void loadParameterValue(@Nonnull ConfigurationParameter<T> parameter, String value) throws CouldNotDeserializeValueException {
         Deserializer<T> deserializer = parameter.getDeserializer();
         T val = deserializer.deserialize(value);
         parameter.setValue(val);
@@ -94,6 +95,18 @@ public class ConfigurationParameter<T> {
             defaultValue,
             Deserializer::intDeserializer,
             Serializer::intSerializer
+        );
+
+        parameters.put(key, parameter);
+        return parameter;
+    }
+
+    public static <E extends Enum<E>> ConfigurationParameter<E> registerEnumParameter(String key, E defaultValue, @Nonnull Class<E> enumClass) {
+        ConfigurationParameter<E> parameter = new ConfigurationParameter<>(
+            key,
+            defaultValue,
+            value -> Deserializer.enumDeserializer(enumClass, value),
+            Serializer::enumSerializer
         );
 
         parameters.put(key, parameter);

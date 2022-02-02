@@ -14,4 +14,8 @@ public interface Serializer<T> {
         return value == null ? "" : String.valueOf(value);
     }
 
+    static <E extends Enum<E>> String enumSerializer(E value) {
+        return value == null ? "" : value.name();
+    }
+
 }
