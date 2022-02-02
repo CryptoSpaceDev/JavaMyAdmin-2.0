@@ -31,7 +31,7 @@ public class DataView implements View {
     }
 
     @Override
-    public Parent getRoot() {
+    public Parent getView() {
         return view;
     }
 

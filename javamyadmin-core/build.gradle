@@ -7,6 +7,8 @@ plugins {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+    implementation group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'

@@ -1,5 +1,7 @@
 package de.javamyadmin;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -1477,8 +1479,13 @@ public enum FontAwesome {
     }
 
     public Text build() {
+        return build(null);
+    }
+
+    public Text build(Paint fill) {
         Text text = new Text(unicode);
         text.setFont(FONT);
+        text.setFill(fill == null ? Color.BLACK : fill);
         return text;
     }
 }

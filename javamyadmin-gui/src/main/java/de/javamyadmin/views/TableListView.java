@@ -100,7 +100,7 @@ public class TableListView implements View {
     }
 
     @Override
-    public Parent getRoot() {
+    public Parent getView() {
         return root;
     }
 

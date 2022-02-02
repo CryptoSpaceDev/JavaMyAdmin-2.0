@@ -3,6 +3,7 @@ package de.javamyadmin;
 import de.javamyadmin.config.Configuration;
 import de.javamyadmin.config.ErrorReporter;
 import de.javamyadmin.core.ConnectionManager;
+import de.javamyadmin.form.Form;
 import de.javamyadmin.views.ConnectionManagerView;
 import de.javamyadmin.views.DataView;
 import de.javamyadmin.views.TableListView;
@@ -20,6 +21,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,10 @@ public class JavaMyAdmin extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        if (primaryStage == null) {
+            throw new NullPointerException("primaryStage == null");
+        }
+
         try {
             Configuration.loadFrom(Files.newInputStream(settingsPath), new ErrorReporter.Print());
         } catch (IOException e) {
@@ -41,10 +47,10 @@ public class JavaMyAdmin extends Application {
 
         String url = Configuration.DATABASE_URL.getValueOrDefault();
         String user = Configuration.DATABASE_USER.getValueOrDefault();
-        String pass = Configuration.DATABASE_PASSWORD.getValueOrDefault();
+        String pass = Configuration.DATABASE_PASS.getValueOrDefault();
 
         if (url == null || user == null || pass == null) {
-            showConnectionManagerDialog();
+            showConnectionManagerDialog(primaryStage);
         }
 
         if (tryConnection(url, user, pass, connector)) {
@@ -55,14 +61,14 @@ public class JavaMyAdmin extends Application {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         MenuItem connectionManagerMenuItem = new MenuItem("Connection Manager", FontAwesome.FA_DATABASE.build());
-        connectionManagerMenuItem.setOnAction(event -> showConnectionManagerDialog());
+        connectionManagerMenuItem.setOnAction(event -> showConnectionManagerDialog(primaryStage));
         fileMenu.getItems().addAll(connectionManagerMenuItem);
         menuBar.getMenus().addAll(fileMenu);
 
         TableListView tableListView = new TableListView(connector);
         DataView dataView = new DataView();
 
-        SplitPane splitPane = new SplitPane(tableListView.getRoot(), dataView.getRoot());
+        SplitPane splitPane = new SplitPane(tableListView.getView(), dataView.getView());
         splitPane.setOrientation(Orientation.HORIZONTAL);
         splitPane.setDividerPosition(0, 0.2);
 
@@ -72,12 +78,16 @@ public class JavaMyAdmin extends Application {
         primaryStage.show();
     }
 
-    private void showConnectionManagerDialog() {
+    private void showConnectionManagerDialog(Stage owner) {
         Stage dialogStage = new Stage();
-        dialogStage.setScene(new Scene(new ConnectionManagerView(manager -> {
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.initOwner(owner);
+        Form connectionManagerForm = new ConnectionManagerView(manager -> {
             connector.setValue(manager);
             dialogStage.close();
-        }).getRoot(), 400.0, 300.0));
+        }).getView();
+        dialogStage.setScene(new Scene(connectionManagerForm, 400.0, 300.0));
+        dialogStage.setResizable(false);
         dialogStage.showAndWait();
     }
 

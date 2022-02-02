@@ -17,7 +17,7 @@ public class Configuration {
 
     public static final ConfigurationParameter<String> DATABASE_URL = ConfigurationParameter.registerStringParameter("DATABASE_URL", null);
     public static final ConfigurationParameter<String> DATABASE_USER = ConfigurationParameter.registerStringParameter("DATABASE_USER", null);
-    public static final ConfigurationParameter<String> DATABASE_PASSWORD = ConfigurationParameter.registerStringParameter("DATABASE_PASSWORD", null);
+    public static final ConfigurationParameter<String> DATABASE_PASS = ConfigurationParameter.registerStringParameter("DATABASE_PASSWORD", null);
 
     private static final Logger log = LoggerFactory.getLogger(Configuration.class);
     private static final Pattern keyValueRegex = Pattern.compile("^([^=]+)=(.*)$");

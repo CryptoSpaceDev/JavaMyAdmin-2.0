@@ -17,7 +17,9 @@ javafx {
 
 dependencies {
     implementation project(":javamyadmin-core")
+
     implementation 'org.slf4j:slf4j-simple:1.7.33'
+    implementation group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
 }
 
 pmd {
