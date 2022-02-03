@@ -6,7 +6,7 @@ public enum DatabaseSystem {
 
     MYSQL("MySQL", "jdbc:mysql://", 3306),
     POSTGRESQL("PostgreSQL", "jdbc:postgresql://", 5432),
-    SQLITE("SQLite", "jdbc:sqlite://", null);
+    SQLITE("SQLite", "jdbc:sqlite:", null);
 
     private final String displayName;
     private final String urlPrefix;

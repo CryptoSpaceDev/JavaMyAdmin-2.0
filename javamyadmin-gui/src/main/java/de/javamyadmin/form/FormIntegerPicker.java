@@ -2,6 +2,7 @@ package de.javamyadmin.form;
 
 import de.javamyadmin.config.ConfigurationParameter;
 import de.javamyadmin.utils.ComponentUtils;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -61,6 +62,10 @@ public class FormIntegerPicker implements FormNode {
         if (parameter != null) {
             spinner.getValueFactory().setValue(parameter.getValueOrDefault());
         }
+    }
+
+    public ObservableValue<Integer> getValueProperty() {
+        return spinner.getValueFactory().valueProperty();
     }
 
 }

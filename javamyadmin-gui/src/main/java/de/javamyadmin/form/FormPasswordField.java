@@ -5,6 +5,7 @@ import de.javamyadmin.config.ConfigurationParameter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -108,7 +109,7 @@ public class FormPasswordField implements FormNode {
         return showPasswordButton.visibleProperty();
     }
 
-    public StringProperty getPasswordProperty() {
+    public ObservableStringValue getValueProperty() {
         return passwordProperty;
     }
 

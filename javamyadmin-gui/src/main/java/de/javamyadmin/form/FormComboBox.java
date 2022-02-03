@@ -1,6 +1,7 @@
 package de.javamyadmin.form;
 
 import de.javamyadmin.config.ConfigurationParameter;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -68,6 +69,10 @@ public class FormComboBox<E extends Enum<E>> implements FormNode {
         if (parameter != null) {
             comboBox.setValue(parameter.getValueOrDefault());
         }
+    }
+
+    public ObservableValue<E> getValueProperty() {
+        return comboBox.getSelectionModel().selectedItemProperty();
     }
 
 }

@@ -2,6 +2,7 @@ package de.javamyadmin.config;
 
 import static de.javamyadmin.config.ConfigurationParameter.registerEnumParameter;
 import static de.javamyadmin.config.ConfigurationParameter.registerIntParameter;
+import static de.javamyadmin.config.ConfigurationParameter.registerPathParameter;
 import static de.javamyadmin.config.ConfigurationParameter.registerStringParameter;
 
 import de.javamyadmin.core.database.DatabaseSystem;
@@ -12,6 +13,7 @@ import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +24,7 @@ public class Configuration {
 
     public static final ConfigurationParameter<DatabaseSystem> DATABASE_SYSTEM = registerEnumParameter("DATABASE_SYSTEM", null, DatabaseSystem.class);
     public static final ConfigurationParameter<String> DATABASE_HOST = registerStringParameter("DATABASE_HOST", null);
+    public static final ConfigurationParameter<Path> DATABASE_FILE = registerPathParameter("DATABASE_FILE", null);
     public static final ConfigurationParameter<Integer> DATABASE_PORT = registerIntParameter("DATABASE_PORT", 0);
     public static final ConfigurationParameter<String> DATABASE_NAME = registerStringParameter("DATABASE_NAME", null);
     public static final ConfigurationParameter<String> DATABASE_USER = registerStringParameter("DATABASE_USER", null);

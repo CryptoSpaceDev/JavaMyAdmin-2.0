@@ -4,6 +4,7 @@ import de.javamyadmin.FontAwesome;
 import de.javamyadmin.config.ConfigurationParameter;
 import java.util.Collections;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -88,6 +89,10 @@ public class FormTextField implements FormNode {
 
     public BooleanProperty getCopyButtonVisibleProperty() {
         return copyValueButton.visibleProperty();
+    }
+
+    public ObservableStringValue getValueProperty() {
+        return textField.textProperty();
     }
 
 }

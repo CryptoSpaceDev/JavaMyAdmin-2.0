@@ -129,12 +129,20 @@ public class Form extends BorderPane {
         return submitButton;
     }
 
+    public void clearNodes() {
+        nodes.clear();
+    }
+
     public void add(FormNode... node) {
-        this.nodes.addAll(node);
+        nodes.addAll(node);
     }
 
     public void addSeparator() {
         this.nodes.add(new FormSeparator());
+    }
+
+    public void addPlaceholder() {
+        this.nodes.add(new FormPlaceholder());
     }
 
     public void verify() throws InvalidValueException {

@@ -1,5 +1,6 @@
 package de.javamyadmin.config;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -120,6 +121,19 @@ public class ConfigurationParameter<T> {
             "Possible values: %s".formatted(Arrays.stream(enumClass.getEnumConstants()).map(E::name).collect(Collectors.joining(", "))),
             value -> Deserializer.enumDeserializer(enumClass, value),
             Serializer::enumSerializer
+        );
+
+        parameters.put(key, parameter);
+        return parameter;
+    }
+
+    public static ConfigurationParameter<Path> registerPathParameter(String key, Path defaultValue) {
+        ConfigurationParameter<Path> parameter = new ConfigurationParameter<>(
+            key,
+            defaultValue,
+            "Path",
+            Deserializer::pathDeserializer,
+            Serializer::pathSerializer
         );
 
         parameters.put(key, parameter);

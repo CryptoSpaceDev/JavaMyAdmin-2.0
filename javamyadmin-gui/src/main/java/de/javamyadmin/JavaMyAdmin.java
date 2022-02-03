@@ -24,6 +24,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,11 +89,11 @@ public class JavaMyAdmin extends Application {
         primaryStage.show();
     }
 
-    private void showConnectionManagerDialog(Stage owner) {
+    private void showConnectionManagerDialog(@Nonnull Stage owner) {
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.initOwner(owner);
-        Form connectionManagerForm = new ConnectionManagerView(manager -> {
+        Form connectionManagerForm = new ConnectionManagerView(owner, manager -> {
             connector.setValue(manager);
             dialogStage.close();
         }).getView();
